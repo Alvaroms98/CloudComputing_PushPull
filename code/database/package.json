@@ -1,0 +1,22 @@
+{
+  "name": "database",
+  "version": "1.0.0",
+  "description": "Microservicio Database PUSH-PULL",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/sanreinoso/cc_pushpull.git"
+  },
+  "author": "Alvaro Moure, Santiago Reinoso",
+  "bugs": {
+    "url": "https://gitlab.com/sanreinoso/cc_pushpull/issues"
+  },
+  "license": "ISC",
+  "homepage": "https://gitlab.com/sanreinoso/cc_pushpull#readme",
+  "dependencies": {
+    "mariadb": "^2.5.5"
+  }
+}

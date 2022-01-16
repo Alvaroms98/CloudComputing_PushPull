@@ -1,0 +1,11 @@
+CREATE DATABASE pushpull;
+USE pushpull;
+CREATE TABLE JSON_OBJECT(
+	Id MEDIUMINT NOT NULL AUTO_INCREMENT,
+      Propietario VARCHAR(15) NOT NULL,
+      MyData LONGTEXT NOT NULL,
+      PRIMARY KEY (Id)
+);
+
+INSERT INTO JSON_OBJECT
+VALUES(NULL, 'SANTIAGO', '{"name": "Santi", "fecha": "12/01/2022", "isAdmin": true}');
