@@ -1,0 +1,19 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "\"Microservicio Front-End del servicio PUSH-PULL\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/sanreinoso/cc_pushpull.git"
+  },
+  "author": "Alvaro Moure, Santiago Reinoso",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/sanreinoso/cc_pushpull/issues"
+  },
+  "homepage": "https://gitlab.com/sanreinoso/cc_pushpull#readme"
+}
