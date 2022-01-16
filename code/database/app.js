@@ -12,7 +12,7 @@ pool.getConnection()
     
       conn.query("SELECT * FROM JSON_OBJECT")
         .then((rows) => {
-          console.log(rows); //[ {val: 1}, meta: ... ]
+          console.log(rows);
           //Table must have been created before 
           // " CREATE TABLE myTable (id int, val varchar(255)) "
           //return conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
