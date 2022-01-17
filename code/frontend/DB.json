@@ -1,0 +1,17 @@
+[
+    {
+        "ID": "1",
+        "PROPIETARIO": "Alvaro",
+        "DATA": "Por ahora solo es un string tonto"
+    },
+    {
+        "ID": "2",
+        "PROPIETARIO": "Alvaro",
+        "DATA": "Por ahora solo es un string tonto"
+    },
+    {
+        "ID": "3",
+        "PROPIETARIO": "Santiago",
+        "DATA": "Por ahora solo es un string tonto"
+    }
+]
