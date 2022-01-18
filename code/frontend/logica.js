@@ -7,32 +7,48 @@
 
 // Estas conexiones las hace de manera transparente a la lógica,
 // para ello utiliza proxies. Un proxy de la base de datos para enviar
-// las peticiones. Y otro proxy de la cola de trabajos
+// las peticiones. Y otro proxy de los workers
 
 const { proxyDB } = require('./proxys/proxyDB');
+const { proxyWorker } = require('./proxys/proxyWorker');
 
 class Logica {
-    constructor(){
-        //this.conexionDB = conexionDB;
 
-        // Al arrancar la lógica, establecemos la conexión con la base 
-        // de datos
+    constructor(){
         this.proxydb = new proxyDB();
-        this.proxydb.conectar();
+        this.proxyworker = new proxyWorker();
     }
 
-    // // Promesa que devuelve las respuestas de la base de datos
-    // respuestaDB(){
-    //     return new Promise((resolve) => {
-    //         this.conexionDB.on('message', (respuesta) => {
-    //             resolve(respuesta.toString());
-    //         });
-    //     });
-    // }
+    // función asíncrona para que los proxys conecten con sus
+    // respectivos endpoints
+    async conectar(){
+
+        
+        this.proxydb.conectar();
+        await this.proxyworker.conectar();
+    
+        console.log("\n Proxys Conectados!");
+    }
 
     // Se llamará desde un POST del REST API
     // Y pondrá el trabajo en la cola de mensajes
-    guardarObjeto(propietario, objeto){
+    async guardarObjeto(propietario, objeto){
+
+        const funcion = 'guardarObjeto';
+
+
+        // Pasamos en los argumentos el objeto que hay que guardar
+        // con los argumentos incluidos
+        let argumentos = {
+            propietario: propietario,
+            objeto: objeto
+        };
+
+        argumentos = JSON.stringify(argumentos);
+        
+        let respuesta = await this.proxyworker.llamar(funcion, argumentos);
+        
+        return respuesta;
 
     }
 
@@ -42,9 +58,6 @@ class Logica {
         const funcion = 'sacarTodo';
         let argumentos = JSON.stringify({});
 
-        // 
-        //this.conexionDB.send([funcion,argumentos]);
-        //let respuesta = await this.respuestaDB();
         // Comunicamos con el proxy
         let respuesta = await this.proxydb.llamar(funcion, argumentos);
 
@@ -57,10 +70,12 @@ class Logica {
     // como propietario "X"
     async buscarObjetoporPropietario(propietario){
         const funcion = 'buscarObjetoporPropietario';
-        let argumentos = JSON.stringify({propietario: propietario});
 
-        //this.conexionDB.send([funcion, argumentos]);
-        //let respuesta = await this.respuestaDB();
+        let argumentos = {
+            propietario: propietario,
+        };
+        argumentos = JSON.stringify(argumentos);
+
 
         // Comunicamos con el proxy
         let respuesta = await this.proxydb.llamar(funcion, argumentos);

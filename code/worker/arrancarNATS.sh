@@ -1,0 +1,1 @@
+docker run -d --name natssrv --rm -p 4222:4222 nats -js

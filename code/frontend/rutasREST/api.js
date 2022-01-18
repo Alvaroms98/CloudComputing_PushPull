@@ -23,7 +23,7 @@ class rutasAPI {
         });
 
         // Pedir todos los datos de un usuario
-        this.router.get('/:propietario', async (req,res) => {
+        this.router.get('/propietario/:propietario', async (req,res) => {
             const { propietario } = req.params;
 
             const respuesta = await logica.buscarObjetoporPropietario(propietario);
@@ -31,7 +31,7 @@ class rutasAPI {
         });
 
         // Subir una nueva entrada a la base de datos
-        this.router.post('/:propietario', async (req,res) => {
+        this.router.post('/propietario/:propietario', async (req,res) => {
             const { propietario } = req.params;
 
             // Recoger el objeto JSON que se quiere guardar
@@ -43,8 +43,8 @@ class rutasAPI {
             if ( Object.keys(objeto).length === 0 ){
                 res.json({"mensaje": "error en el formato (json), o objeto vacío."});
             } else{
-
-                res.json({"mensaje": "petición recibida con éxito"});
+                const respuesta = await logica.guardarObjeto(propietario, objeto);
+                res.json(respuesta);
             }
             
             
@@ -54,4 +54,4 @@ class rutasAPI {
 
 
 
-module.exports = rutasAPI;
+module.exports.rutasAPI = rutasAPI;

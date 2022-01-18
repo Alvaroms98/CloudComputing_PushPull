@@ -12,6 +12,9 @@ class LogicaDB{
         this.conexion.send(JSON.stringify(datos));
     }
 
+    // args{
+    //      propietario: "nombre"    
+    //}
     buscarObjetoporPropietario(args){
         let datosPropietario = [];
         datos.forEach((dato) => {
@@ -22,6 +25,27 @@ class LogicaDB{
 
         datosPropietario = JSON.stringify(datosPropietario);
         this.conexion.send(datosPropietario);
+    }
+
+    // args{
+    //      propietario: "nombre",
+    //      objeto: "data"    
+    //}
+    guardarObjeto(args){
+        // Guardamos el objeto
+        const id = this.datos.length + 1;
+        this.datos.push({
+            ID: `${id}`,
+            PROPIETARIO: args.propietario,
+            DATA: args.objeto
+        });
+
+        let respuesta = {
+            mensaje: "Objeto guardado con éxito en la base de datos"
+        }
+
+        respuesta = JSON.stringify(respuesta);
+        this.conexion.send(respuesta);
     }
 }
 

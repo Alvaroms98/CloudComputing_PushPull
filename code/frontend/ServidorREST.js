@@ -2,26 +2,12 @@
 
 const express = require('express');
 const morgan = require('morgan');
-//const zmq = require('zeromq');
-const rutasAPI = require('./rutasREST/api');
+
+// Rutas REST
+const { rutasAPI } = require('./rutasREST/api');
 
 // Lógica
 const { Logica } = require('./logica');
-
-// // Conf DB
-// const URL = "localhost:3001";
-
-
-
-// // Conexión ENDPOINT DB
-// const conectarDB = () => {
-//     const conexionDB = zmq.socket('req');
-//     conexionDB.connect(`tcp://${URL}`);
-
-//     return conexionDB;
-// }
-
-
 
 
 const arrancarAPIREST = (logica) => {
@@ -45,12 +31,15 @@ const arrancarAPIREST = (logica) => {
 }
 
 
-const main = () => {
+const main = async () => {
     // // Abrir conexión con la base de datos
     // const conexionDB = conectarDB();
 
     // Llamar a la lógica
     const logica = new Logica();
+
+    // conectar los proxys de la lógica a sus endpoints
+    await logica.conectar();
 
     // Pasamos la instancia de la lógica
     // al servidor API REST para que pueda utilizarla
@@ -61,11 +50,12 @@ const main = () => {
         console.log(`REST API sirviendo en el puerto ${app.get('port')}`);
     });
 
-    process.on('SIGINT', () => {
+    process.on('SIGINT', async () => {
         console.log("Apagando servidor REST");
         //conexionDB.close();
         webServer.close();
         logica.proxydb.cerrarConexion();
+        await logica.proxyworker.cerrarConexion();
     });
 }
 

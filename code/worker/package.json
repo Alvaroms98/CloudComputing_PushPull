@@ -1,8 +1,8 @@
 {
-  "name": "frontend",
+  "name": "worker",
   "version": "1.0.0",
-  "description": "\"Microservicio Front-End del servicio PUSH-PULL\"",
-  "main": "index.js",
+  "description": "Microservicio Worker del servicio PUSH-PULL",
+  "main": "endpoint.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,8 +17,6 @@
   },
   "homepage": "https://gitlab.com/sanreinoso/cc_pushpull#readme",
   "dependencies": {
-    "express": "^4.17.2",
-    "morgan": "^1.10.0",
     "nats": "^2.4.0",
     "zeromq": "^5.2.8"
   },
