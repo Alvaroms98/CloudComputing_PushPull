@@ -2,7 +2,7 @@
   "name": "database",
   "version": "1.0.0",
   "description": "Microservicio Database PUSH-PULL",
-  "main": "app.js",
+  "main": "proxyLogicaDB.js",
   "scripts": {
     "test": "mocha"
   },
@@ -17,6 +17,7 @@
   "license": "ISC",
   "homepage": "https://gitlab.com/sanreinoso/cc_pushpull#readme",
   "dependencies": {
-    "mariadb": "^2.5.5"
+    "mariadb": "^2.5.5",
+    "zeromq": "^5.2.8"
   }
 }
