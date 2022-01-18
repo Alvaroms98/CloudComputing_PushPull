@@ -5,7 +5,7 @@ const router = new Router();
 
 router.get('/', (req, res) => {
     const bienvenida = {
-        mensaje: 'Bienvenido al REST API de PUSH-PULL. Para empezar a usarla: URL/api/', 
+        mensaje: 'Bienvenido/a al REST API de PUSH-PULL. Para empezar a usarla: URL/api/', 
     };
     res.json(bienvenida);
 });  

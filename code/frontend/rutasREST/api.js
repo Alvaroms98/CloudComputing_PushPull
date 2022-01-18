@@ -6,7 +6,6 @@ const { Router } = require('express');
 // en los endpoints REST API, pero se inicializa en el servidor
 // esto quiere decir que la conexión con la base de datos se establece
 // en "restapi.js" desde aquí solo se llama a las funciones de esta
-//const { Logica } = require('../logica');
 
 
 class rutasAPI {
@@ -29,6 +28,26 @@ class rutasAPI {
 
             const respuesta = await logica.buscarObjetoporPropietario(propietario);
             res.json(respuesta);
+        });
+
+        // Subir una nueva entrada a la base de datos
+        this.router.post('/:propietario', async (req,res) => {
+            const { propietario } = req.params;
+
+            // Recoger el objeto JSON que se quiere guardar
+            const objeto = req.body;
+            console.log(objeto);
+
+            // Comprobamos si el objeto está vacio o si no se está enviando
+            // un objeto json
+            if ( Object.keys(objeto).length === 0 ){
+                res.json({"mensaje": "error en el formato (json), o objeto vacío."});
+            } else{
+
+                res.json({"mensaje": "petición recibida con éxito"});
+            }
+            
+            
         });
     }
 }
