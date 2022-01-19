@@ -48,7 +48,7 @@ class Logica {
         
         let respuesta = await this.proxyworker.llamar(funcion, argumentos);
         
-        return respuesta;
+        return respuesta; // ID UNICO
 
     }
 
@@ -86,5 +86,11 @@ class Logica {
         return respuesta;
     }
 }
+
+// Delete
+// TODO
+// TODO DE PROPIETARIO
+// TODO QUE TENGA UN CAMPO
+// UN UNICO POST -> ID
 
 module.exports.Logica = Logica;
