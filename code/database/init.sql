@@ -3,7 +3,8 @@ USE pushpull;
 CREATE TABLE JSON_OBJECT(
 	Id MEDIUMINT NOT NULL AUTO_INCREMENT,
       Propietario VARCHAR(15) NOT NULL,
-      MyData LONGTEXT NOT NULL,
+      MyData JSON NOT NULL,
+      CHECK (JSON_VALID(MyData)),
       PRIMARY KEY (Id)
 );
 

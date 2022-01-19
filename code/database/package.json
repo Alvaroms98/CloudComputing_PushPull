@@ -18,6 +18,7 @@
   "homepage": "https://gitlab.com/sanreinoso/cc_pushpull#readme",
   "dependencies": {
     "mariadb": "^2.5.5",
+    "nats": "^2.4.0",
     "zeromq": "^5.2.8"
   }
 }

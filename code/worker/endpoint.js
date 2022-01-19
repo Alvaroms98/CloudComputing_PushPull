@@ -33,14 +33,14 @@ const rutinaDeTrabajo = async (worker, logica) => {
             console.log(`Me han asignado este trabajo: ${trabajo.funcion}`);
             console.log(trabajo.parametros);
 
-
+            
             // Llamar al método de la lógica correspondiente
             let respuesta = await logica[trabajo.funcion](trabajo.parametros);
 
             // Responder trabajo
             await worker.responderATrabajo(trabajo,{
                 estado: "OK",
-                respuesta: respuesta,
+                respuesta: JSON.parse(respuesta),
             });
 
         } else{

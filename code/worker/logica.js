@@ -18,16 +18,13 @@ class Logica {
         this.proxydb.conectar();
     }
 
-    // argumentos {
-    //      propietario: "nombre",
-    //      objeto: JSON
-    // }
     async guardarObjeto(argumentos){
-        console.log(argumentos);
-        return {mensaje: "Hola desde la lógica del worker"}
-    }
+        const funcion = 'guardarObjeto';
 
-    
+        let respuesta = await this.proxydb.llamar(funcion, argumentos);
+
+        return respuesta;
+    }
 
 }
 
