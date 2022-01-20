@@ -192,7 +192,7 @@ class Logica {
         } else{
             // Extraemos todos los ids de los objetos encontrados y llamamos
             // en bucle a la funcion borrarPorID
-            objetosMatch.forEach((elemento) => {
+            objetosMatch.forEach( async (elemento) => {
                 _ = await this.borrarPorID(elemento.Id);
             });
             let respuesta = {
