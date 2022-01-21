@@ -123,8 +123,20 @@ class Logica {
             let objetosMatch = [];
             objetosPropietario.forEach((elemento) => {
                 // Metodo para comprobar si existe un campo
-                if (elemento.MyData.hasOwnProperty(campo)) {
-                    objetosMatch.push(elemento);
+                if (Array.isArray(elemento.MyData)){
+                    let match = false;
+                    elemento.MyData.forEach((objeto) => {
+                        if (objeto.hasOwnProperty(campo)) {
+                            match = true;
+                        }
+                    });
+                    if (match){
+                        objetosMatch.push(elemento);
+                    }
+                }else{
+                    if (elemento.MyData.hasOwnProperty(campo)) {
+                        objetosMatch.push(elemento);
+                    }
                 }
             });
 
@@ -232,10 +244,10 @@ class Logica {
             // Extraemos todos los ids de los objetos encontrados y llamamos
             // en bucle a la funcion borrarPorID
             objetosMatch.forEach(async (elemento) => {
-                _ = await this.borrarPorID(elemento.Id);
+                let nada = await this.borrarPorID(elemento.Id);
             });
             let respuesta = {
-                mensaje: "Objetos eleminados de la base de datos permanentemente",
+                mensaje: `${objetosMatch.length} objetos eleminados de la base de datos permanentemente`,
                 objetosEliminados: objetosMatch,
             };
             return respuesta;
