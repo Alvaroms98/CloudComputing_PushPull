@@ -1,9 +1,13 @@
-#Imagen base de datos MariaDB 
-#Database=pushpull
-#Table: JSON_OBJECT
+FROM node:latest
 
-FROM mariadb:latest
+COPY ["package.json", "package-lock.json", "/usr/src/"]
 
-COPY ./init.sql /docker-entrypoint-initdb.d/
+WORKDIR /usr/src
 
-VOLUME [ "/var/lib/mysql" ]
+RUN npm install
+RUN npm rebuild bcrypt
+
+COPY [".", "/usr/src/"]
+
+CMD ["node", "endpointDB.js"]
+#CMD ["npx", "nodemon", "--legacy-watch", "endpointDB.js"]

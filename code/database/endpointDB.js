@@ -40,6 +40,9 @@ function main() {
             console.log(err);
         } else {
             console.log("Respondo al cliente en el puerto 3001");
+            console.log("---------------- ENV -----------------");
+            console.log("DB_PASSWORD", process.env.DB_PASSWORD);
+            console.log("DB_HOST", process.env.DB_HOST);
         }
 
     });

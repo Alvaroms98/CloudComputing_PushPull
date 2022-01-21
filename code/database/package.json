@@ -2,7 +2,7 @@
   "name": "database",
   "version": "1.0.0",
   "description": "Microservicio Database PUSH-PULL",
-  "main": "proxyLogicaDB.js",
+  "main": "endpointDB.js",
   "scripts": {
     "test": "mocha"
   },

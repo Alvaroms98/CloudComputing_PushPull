@@ -1,8 +1,9 @@
 const mariadb = require('mariadb');
-const password = process.env.PASSWORD || 'admin1234';
-const respuesta = [];
+const password = process.env.DB_PASSWORD || 'admin1234';
+const host = process.env.DB_HOST || '127.0.0.1';
+
 const pool = mariadb.createPool({
-  host: '127.0.0.1',
+  host: host,
   user: 'root',
   password: password,
   database: 'pushpull',

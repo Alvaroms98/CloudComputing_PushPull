@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  mariadb:
+    build: code/database/mariaDB/.
+    environment:
+      MYSQL_ROOT_PASSWORD: cc-pushpull
+    ports:
+      - "3306:3306"
+  
+  database:
+    build:  code/database/.
+    environment:
+      DB_PASSWORD: 'cc-pushpull'
+      DB_HOST: mariadb
+    depends_on:
+      - mariadb
+    ports:
+      - "3001:3001"
+    
