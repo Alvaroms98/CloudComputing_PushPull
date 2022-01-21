@@ -14,19 +14,19 @@ const { proxyWorker } = require('./proxys/proxyWorker');
 
 class Logica {
 
-    constructor(){
+    constructor() {
         this.proxydb = new proxyDB();
         this.proxyworker = new proxyWorker();
     }
 
     // función asíncrona para que los proxys conecten con sus
     // respectivos endpoints
-    async conectar(){
+    async conectar() {
 
-        
+
         this.proxydb.conectar();
         await this.proxyworker.conectar();
-    
+
         console.log("\n Proxys Conectados!");
     }
 
@@ -34,7 +34,7 @@ class Logica {
 
     // Se llamará desde un POST del REST API
     // Y pondrá el trabajo en la cola de mensajes
-    async guardarObjeto(propietario, objeto){
+    async guardarObjeto(propietario, objeto) {
 
         const funcion = 'guardarObjeto';
 
@@ -47,9 +47,9 @@ class Logica {
         };
 
         argumentos = JSON.stringify(argumentos);
-        
+
         let respuesta = await this.proxyworker.llamar(funcion, argumentos);
-        
+
         let objetoID = respuesta.respuesta.insertId;
         respuesta = {
             mensaje: `Objeto insertado en la base de datos correctamente`,
@@ -63,7 +63,7 @@ class Logica {
     // ------------------------------- GET --------------------------------------
 
     // Saca todas las instancias de la base de datos
-    async sacarTodo(){
+    async sacarTodo() {
         // Le decimos a la base de datos que queremos todo
         const funcion = 'sacarTodo';
         let argumentos = JSON.stringify({});
@@ -78,7 +78,7 @@ class Logica {
 
     // Saca las instancias de la base de datos que tengan
     // como propietario "X"
-    async buscarObjetoporPropietario(propietario){
+    async buscarObjetoporPropietario(propietario) {
         const funcion = 'buscarObjetoporPropietario';
 
         let argumentos = {
@@ -90,14 +90,14 @@ class Logica {
         // Comunicamos con el proxy
         let respuesta = await this.proxydb.llamar(funcion, argumentos);
 
-        
+
         respuesta = JSON.parse(respuesta);
         console.log(respuesta);
         return respuesta;
     }
 
     // Sacar el objeto por ID (este ID se devuelve en la respusta del POST)
-    async buscarPorID(id){
+    async buscarPorID(id) {
         const funcion = 'buscarPorID';
         let argumentos = {
             id: id
@@ -112,25 +112,25 @@ class Logica {
     }
 
     // Busca todos los objetos de un propietario que tengan el campo
-    async buscarObjetoporPropietarioYCampo(propietario, campo){
+    async buscarObjetoporPropietarioYCampo(propietario, campo) {
         let objetosPropietario = await this.buscarObjetoporPropietario(propietario);
 
         // Si no se han encontrado objetos del propietario
-        if (objetosPropietario === null){
-            return {mensaje: "No se han encontrado objetos"};
+        if (objetosPropietario === null) {
+            return { mensaje: "No se han encontrado objetos" };
 
         } else { // Si se encuentran objetos hay que filtrarlos
             let objetosMatch = [];
             objetosPropietario.forEach((elemento) => {
                 // Metodo para comprobar si existe un campo
-                if (elemento.MyData.hasOwnProperty(campo)){
+                if (elemento.MyData.hasOwnProperty(campo)) {
                     objetosMatch.push(elemento);
                 }
             });
 
             // Ahora comprobamos la longitud del array de match
-            if (objetosMatch.length === 0){ // Si no hay matches
-                return {mensaje: "No se han encontrado objetos"};
+            if (objetosMatch.length === 0) { // Si no hay matches
+                return { mensaje: "No se han encontrado objetos" };
 
             } else { // Si hay matches los devolvemos directamente
                 return objetosMatch;
@@ -142,57 +142,96 @@ class Logica {
     // ------------------------------- DELETE (WORKER JOB) --------------------------------------
 
     // Borra toda la tabla de la base de datos
-    async borrarTodo(){
+    async borrarTodo() {
         const funcion = 'borrarTodo';
         let argumentos = JSON.stringify({});
 
         let respuesta = await this.proxyworker.llamar(funcion, argumentos);
 
-        respuesta = JSON.parse(respuesta);
+        if (respuesta && respuesta.respuesta.affectedRows > 0) {
+            respuesta = {
+                mensaje: `Se han eliminado ${respuesta.respuesta.affectedRows} registros de la base de datos`,
+                estado: respuesta.estado
+            }
+        }
+        else {
+            respuesta = {
+                mensaje: `No se han podido eliminar registros`,
+                estado: 'FAIL'
+            }
+        }
         return respuesta;
     }
 
     // Borrar todos los objetos de un propietario
-    async borrarPropietario(propietario){
+    async borrarPropietario(propietario) {
+
         const funcion = 'borrarPropietario';
         let argumentos = {
             propietario: propietario
         };
-        argumentos = JSON.parse(argumentos);
+
+        argumentos = JSON.stringify(argumentos);
 
         let respuesta = await this.proxyworker.llamar(funcion, argumentos);
-
-        respuesta = JSON.parse(respuesta);
+        if (respuesta && respuesta.respuesta.affectedRows > 0) {
+            respuesta = {
+                mensaje: `Se han eliminado ${respuesta.respuesta.affectedRows} registros de ${propietario}`,
+                estado: respuesta.estado
+            }
+        }
+        else {
+            respuesta = {
+                mensaje: `No se han podido eliminar registros`,
+                estado: 'FAIL'
+            }
+        }
         return respuesta;
     }
 
     // Borrar por ID
-    async borrarPorID(id){
+    async borrarPorID(id) {
         const funcion = 'borrarPorID';
         let argumentos = {
             id: id
         };
 
-        argumentos = JSON.parse(argumentos);
+        argumentos = JSON.stringify(argumentos);
 
-        let respuesta = await this.proxyworker.llamar(funcion, argumentos);
+        try{
+            let respuesta = await this.proxyworker.llamar(funcion, argumentos);
+            if (respuesta && respuesta.respuesta.affectedRows > 0) {
+                respuesta = {
+                    mensaje: `Se ha eliminado ${respuesta.respuesta.affectedRows} registro con ID: ${id}`,
+                    estado: respuesta.estado
+                }
+            }
+            else {
+                respuesta = {
+                    mensaje: `No se han podido eliminar registros`,
+                    estado: 'FAIL'
+                }
+            }
+            return respuesta;
+        }
+        catch(err){
+            return err;
+        }
 
-        respuesta = JSON.parse(respuesta);
-        return respuesta;
     }
 
     // Borrar todos los objetos de un propietario que tengan un campo en especificio
-    async borrarObjetoporPropietarioYCampo(propietario,campo){
+    async borrarObjetoporPropietarioYCampo(propietario, campo) {
         // Primero buscamos cuales hay
-        let objetosMatch = await this.buscarObjetoporPropietarioYCampo(propietario,campo);
+        let objetosMatch = await this.buscarObjetoporPropietarioYCampo(propietario, campo);
 
-        if (objetosMatch.hasOwnProperty('mensaje')){
+        if (objetosMatch.hasOwnProperty('mensaje')) {
             let noHayMatch = objetosMatch;
             return noHayMatch;
-        } else{
+        } else {
             // Extraemos todos los ids de los objetos encontrados y llamamos
             // en bucle a la funcion borrarPorID
-            objetosMatch.forEach( async (elemento) => {
+            objetosMatch.forEach(async (elemento) => {
                 _ = await this.borrarPorID(elemento.Id);
             });
             let respuesta = {

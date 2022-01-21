@@ -2,15 +2,14 @@ const mariadb = require('mariadb');
 const password = process.env.PASSWORD || 'admin1234';
 const respuesta = [];
 const pool = mariadb.createPool({
-     host: '127.0.0.1', 
-     user:'root', 
-     password: password,
-     database: 'pushpull',
-     connectionLimit: 5
+  host: '127.0.0.1',
+  user: 'root',
+  password: password,
+  database: 'pushpull',
+  connectionLimit: 5
 });
 
-class Database
-{
+class Database {
   constructor() {
 
   }
@@ -23,21 +22,21 @@ class Database
    */
   async sacarTodo() {
     let conn;
-  
-    try{
+
+    try {
       conn = await pool.getConnection();
       const rows = await conn.query("SELECT * FROM JSON_OBJECT");
       console.log("Devuelvo base de datos completa --- sacarTodo()");
       return rows;
     }
-    catch(err){
+    catch (err) {
       throw new Error(err.message);
     }
     finally {
-      if (conn){
+      if (conn) {
         conn.end();
-      } 
-     //process.exit(0);
+      }
+      //process.exit(0);
     }
   }
 
@@ -48,10 +47,10 @@ class Database
    * @param {*} args { propietario: name }
    * @returns Devuelve data de la DB filtradas por 'Propietario'
    */
-  async buscarObjetoporPropietario(args){
+  async buscarObjetoporPropietario(args) {
     let conn;
-  
-    try{
+
+    try {
       //Convierto string a JSON y extraigo el propietario
       var propietario = JSON.parse(args);
 
@@ -59,24 +58,31 @@ class Database
       let myQuery = `SELECT * FROM JSON_OBJECT WHERE Propietario ='${propietario.propietario}'`;
       const rows = await conn.query(myQuery);
       console.log("Devuelvo datos de Propietario: --- ", propietario);
-      return rows; 
-      
+      return rows;
+
     }
-    catch(err){
+    catch (err) {
       throw new Error(err.message);
     }
     finally {
-      if (conn){
+      if (conn) {
         conn.end();
-      } 
-     //process.exit(0);
+      }
+      //process.exit(0);
     }
   }
 
-  async guardarObjeto(args){
+  /**
+   * Inserta objetos en la base de datos, cuando el objeto este bien construido.
+   * Enviamos consulta de insertar usando el método `query()`
+   * @param {*} args { propietario: name , objeto : {...} }
+   * @returns Devuelme mensaje de confirmación de la base de datos o muestra 
+   * el error en caso de fallo.
+   */
+  async guardarObjeto(args) {
     let conn;
-    try{
-      //Convierto string a JSON y extraigo el propietario
+    try {
+      //Convierto string a JSON, extraigo datos [propietario, objeto]
       var body = JSON.parse(args);
       var propietario = body.propietario;
       var objeto = body.objeto;
@@ -85,16 +91,108 @@ class Database
       let myQuery = `INSERT INTO JSON_OBJECT VALUES (NULL, '${propietario}', '${JSON.stringify(objeto)}')`;
       const rta = await conn.query(myQuery);
       console.log("Insertando datos en la DB. Propietario: --- ", propietario);
-      return rta;   
+      return rta;
     }
-    catch(err){
+    catch (err) {
       throw new Error(err.message);
     }
     finally {
-      if (conn){
+      if (conn) {
         conn.end();
-      } 
-     //process.exit(0);
+      }
+      //process.exit(0);
+    }
+  }
+
+  /**
+   * Busqueda de un registro en la base de datos filtrando por Id-
+   * @param {*} args { id: id }
+   * @returns Devuleve registro con identificador unico en base de datos.
+   */
+  async buscarPorID(args) {
+    let conn;
+    
+    try {
+      //Convierto string a JSON, extraigo id
+      var id = JSON.parse(args);
+      conn = await pool.getConnection();
+      let myQuery = `SELECT * FROM JSON_OBJECT WHERE Id =${id.id}`;
+      const rows = await conn.query(myQuery);
+      console.log("Devuelvo datos objeto con ID --- ", id);
+      return rows;
+    }
+    catch (err) { 
+      throw new Error(err.message);
+    }
+    finally {
+      if (conn) {
+        conn.end();
+      }
+    }
+  }
+
+  async borrarTodo(){
+    let conn;
+    
+    try {
+      conn = await pool.getConnection();
+      const rows = await conn.query('DELETE FROM JSON_OBJECT');
+      console.log("Borrando toda la data de JSON_Object");
+      return rows;
+    }
+    catch (err) {
+      throw new Error(err.message);
+    }
+    finally {
+      if (conn) {
+        conn.end();
+      }
+    }
+  }
+
+  async borrarPropietario(args){
+    let conn;
+   
+    try {
+      //Convierto string a JSON y extraigo el propietario
+      var propietario = JSON.parse(args);
+
+      conn = await pool.getConnection();
+      let myQuery = `DELETE FROM JSON_OBJECT WHERE Propietario ='${propietario.propietario}'`;
+      const rows = await conn.query(myQuery);
+      console.log("Eliminando datos del propietario: --- ", propietario);
+      return rows;
+    }
+    catch (err) {
+      throw new Error(err.message);
+    }
+    finally {
+      if (conn) {
+        conn.end();
+      }
+    }
+
+  }
+
+
+  async borrarPorID(args){
+    let conn;
+    try {
+      //Convierto string a JSON, extraigo id
+      var id = JSON.parse(args);
+      conn = await pool.getConnection();
+      let myQuery = `DELETE FROM JSON_OBJECT WHERE Id =${id.id}`;
+      const rows = await conn.query(myQuery);
+      console.log("Eliminando objeto con ID --- ", id);
+      return rows;
+    }
+    catch (err) {
+      throw new Error(err.message);
+    }
+    finally {
+      if (conn) {
+        conn.end();
+      }
     }
   }
 

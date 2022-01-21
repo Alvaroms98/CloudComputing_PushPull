@@ -13,16 +13,33 @@ const { proxyDB } = require('./proxys/proxyDB');
 
 class Logica {
 
-    constructor(){
+    constructor() {
         this.proxydb = new proxyDB();
         this.proxydb.conectar();
     }
 
-    async guardarObjeto(argumentos){
+    async guardarObjeto(argumentos) {
         const funcion = 'guardarObjeto';
-
         let respuesta = await this.proxydb.llamar(funcion, argumentos);
+        return respuesta;
+    }
 
+    async borrarTodo(argumentos) {
+        const funcion = 'borrarTodo';
+        let respuesta = await this.proxydb.llamar(funcion, argumentos);
+        return respuesta;
+    }
+
+    async borrarPropietario(argumentos) {
+        const funcion = 'borrarPropietario';
+        let respuesta = await this.proxydb.llamar(funcion, argumentos);
+        return respuesta;
+    }
+
+
+    async borrarPorID(argumentos) {
+        const funcion = 'borrarPorID';
+        let respuesta = await this.proxydb.llamar(funcion, argumentos);
         return respuesta;
     }
 
