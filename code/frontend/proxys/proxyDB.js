@@ -4,14 +4,15 @@
 
 // Comunicación por zmq
 const zmq = require('zeromq');
-const URL = "localhost:3001"; // esto hay que pasarlo por configuración
+//const URL = "localhost:3001"; // esto hay que pasarlo por configuración
 
 
 // Como todo proxy esto no implementa ninguna lógica, solo comunicaciones
 class proxyDB{
 
     // Crear el socket request para enviar peticiones a la DB
-    constructor(){
+    constructor(URL){
+        this.URL = URL;
         this.conexionDB = zmq.socket('req');
     }
 
@@ -27,7 +28,7 @@ class proxyDB{
 
     // Establece comunicación con la base de datos
     conectar(){
-        this.conexionDB.connect(`tcp://${URL}`);
+        this.conexionDB.connect(this.URL);
     }
 
     // Sirve para llamar cualquier método de la lógica de la 

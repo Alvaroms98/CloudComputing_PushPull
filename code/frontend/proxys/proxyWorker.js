@@ -12,16 +12,16 @@ const { ColaDeTrabajos } = require('./ColaDeTrabajos');
 
 // URL para conectarse a la cola de NATS, hay que pasarla por
 // variable de entorno
-const NATS_URL = "localhost:4222";
+//const NATS_URL = "localhost:4222";
 
 class proxyWorker{
 
-    constructor(){
-
+    constructor(NATS_URL){
+        this.NATS_URL = NATS_URL;
     }
 
     async conectar(){
-        this.conexionWorker = await new ColaDeTrabajos(NATS_URL,
+        this.conexionWorker = await new ColaDeTrabajos(this.NATS_URL,
             {
                 worker: false,
                 nombreCliente: "clienteRandom"

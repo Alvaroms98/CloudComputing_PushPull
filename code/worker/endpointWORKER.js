@@ -9,9 +9,10 @@
 const { ColaDeTrabajos, esperar } = require('./proxys/ColaDeTrabajos');
 const { Logica } = require('./logica');
 
-// URL para conectarse a la cola de NATS, hay que pasarla por
-// variable de entorno
-const NATS_URL = "localhost:4222";
+// --------------- CONFIGURACIONES PARA DESPLIEGUE ---------- //
+const NATS_URL = process.env.NATS_ENDPOINT;
+const DB_URL = process.env.DB_ENDPOINT;
+// --------------------------------------------------------- //
 
 // Para salir del bucle infinito cuando se quiera matar el proceso
 let cerrar = false
@@ -74,7 +75,7 @@ const main = async () => {
     );
 
     // llamar a la lógica del worker
-    const logica = new Logica();
+    const logica = new Logica(DB_URL);
 
     // Para matar al trabajador
     process.on('SIGINT', async () => {

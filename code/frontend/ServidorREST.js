@@ -9,13 +9,22 @@ const { rutasAPI } = require('./rutasREST/api');
 // Lógica
 const { Logica } = require('./logica');
 
+// --------------- CONFIGURACIONES PARA DESPLIEGUE ---------- //
+// Puerto de escucha
+const REST_PORT = process.env.HTTP_REST_API_PORT;
+
+// Conexiones
+const WORKER_URL = process.env.WORKER_ENDPOINT; //"172.17.0.1:4222";
+const DB_URL = process.env.DB_ENDPOINT; //"tcp://172.17.0.1:3001";
+
+// --------------------------------------------------------- //
 
 const arrancarAPIREST = (logica) => {
     const app = express();
     
     // Configuración
     // El puerto tiene que configurarse externamente
-    app.set('port', process.env.RESTport || 3000);
+    app.set('port', REST_PORT);
 
     // middlewares
     app.use(morgan('dev'));
@@ -36,7 +45,7 @@ const main = async () => {
     // const conexionDB = conectarDB();
 
     // Llamar a la lógica
-    const logica = new Logica();
+    const logica = new Logica(DB_URL, WORKER_URL);
 
     // conectar los proxys de la lógica a sus endpoints
     await logica.conectar();

@@ -13,8 +13,8 @@ const { proxyDB } = require('./proxys/proxyDB');
 
 class Logica {
 
-    constructor() {
-        this.proxydb = new proxyDB();
+    constructor(DB_URL) {
+        this.proxydb = new proxyDB(DB_URL);
         this.proxydb.conectar();
     }
 
