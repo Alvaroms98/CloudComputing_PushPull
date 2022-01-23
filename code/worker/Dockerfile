@@ -8,4 +8,4 @@ RUN npm install
 
 COPY [".","/usr/src/"]
 
-CMD ["node", "endpoint.js"]
+CMD ["node", "endpointWORKER.js"]

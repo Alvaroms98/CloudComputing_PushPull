@@ -21,7 +21,7 @@ services:
       - "3001"
   
   natssrv:
-    image: nats
+    build: code/cola/.
     ports:
       - "4222"
     command: -js
@@ -30,7 +30,7 @@ services:
     build: code/worker/.
     environment:
         NATS_ENDPOINT: natssrv:4222
-        DB_ENDPOINT: database:3001
+        DB_ENDPOINT: tcp://database:3001
     depends_on:
       - natssrv
       - database
@@ -38,8 +38,9 @@ services:
   frontend:
     build: code/frontend/.
     environment:
-        NATS_URL: natssrv:4222
-        URL: database:3001
+        WORKER_ENDPOINT: natssrv:4222
+        DB_ENDPOINT: tcp://database:3001
+        HTTP_REST_API_PORT: 3000
     depends_on:
       - natssrv
       - worker

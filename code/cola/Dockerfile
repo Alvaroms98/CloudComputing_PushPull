@@ -2,7 +2,7 @@
 
 # ROL: COLA
 
-FROM nats
+FROM nats:latest
 
 # Habilitar la opción de JetStream para su funcionalidad
 # completa de cola de trabajos
