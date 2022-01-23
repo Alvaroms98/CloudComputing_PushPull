@@ -3,13 +3,15 @@ version: "3.8"
 services:
   mariadb:
     build: code/database/mariaDB/.
+    image: mariadb:push-pull
     environment:
       MYSQL_ROOT_PASSWORD: cc-pushpull
     ports:
       - "3306"
   
   database:
-    build:  code/database/.
+    build: code/database/.
+    image: logicadb:1.0.0
     environment:
       DB_PASSWORD: 'cc-pushpull'
       DB_HOST: mariadb
@@ -27,8 +29,8 @@ services:
   worker:
     build: code/worker/.
     environment:
-        NATS_URL: natssrv:4222
-        URL: database:3001
+        NATS_ENDPOINT: natssrv:4222
+        DB_ENDPOINT: database:3001
     depends_on:
       - natssrv
       - database

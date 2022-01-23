@@ -4,7 +4,6 @@
 
 // Comunicación por zmq
 const zmq = require('zeromq');
-//const URL = "localhost:3001"; // esto hay que pasarlo por configuración
 const URL = process.env.URL || 'localhost:3001';
 
 
