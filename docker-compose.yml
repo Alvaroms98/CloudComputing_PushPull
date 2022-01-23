@@ -6,7 +6,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: cc-pushpull
     ports:
-      - "3306:3306"
+      - "3306"
   
   database:
     build:  code/database/.
@@ -16,5 +16,33 @@ services:
     depends_on:
       - mariadb
     ports:
-      - "3001:3001"
+      - "3001"
+  
+  natssrv:
+    image: nats
+    ports:
+      - "4222"
+    command: -js
+  
+  worker:
+    build: code/worker/.
+    environment:
+        NATS_URL: natssrv:4222
+        URL: database:3001
+    depends_on:
+      - natssrv
+      - database
+  
+  frontend:
+    build: code/frontend/.
+    environment:
+        NATS_URL: natssrv:4222
+        URL: database:3001
+    depends_on:
+      - natssrv
+      - worker
+      - database
+    ports:
+      - "3000:3000"
+
     

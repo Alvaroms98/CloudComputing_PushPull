@@ -11,7 +11,7 @@ const { Logica } = require('./logica');
 
 // URL para conectarse a la cola de NATS, hay que pasarla por
 // variable de entorno
-const NATS_URL = "localhost:4222";
+const NATS_URL = process.env.NATS_URL || "localhost:4222";
 
 // Para salir del bucle infinito cuando se quiera matar el proceso
 let cerrar = false
