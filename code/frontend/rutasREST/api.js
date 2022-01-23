@@ -48,7 +48,7 @@ class rutasAPI {
 
             // Recoger el objeto JSON que se quiere guardar
             const objeto = req.body;
-            console.log(objeto);
+            //console.log(objeto);
 
             // Comprobamos si el objeto está vacio o si no se está enviando
             // un objeto json

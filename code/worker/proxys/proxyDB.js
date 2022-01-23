@@ -12,7 +12,8 @@ const URL = process.env.URL || 'localhost:3001';
 class proxyDB{
 
     // Crear el socket request para enviar peticiones a la DB
-    constructor(){
+    constructor(URL){
+        this.URL = URL;
         this.conexionDB = zmq.socket('req');
     }
 
@@ -28,7 +29,7 @@ class proxyDB{
 
     // Establece comunicación con la base de datos
     conectar(){
-        this.conexionDB.connect(`tcp://${URL}`);
+        this.conexionDB.connect(this.URL);
     }
 
     // Sirve para llamar cualquier método de la lógica de la 

@@ -16,12 +16,12 @@ const NATS_URL = process.env.NATS_URL || "localhost:4222";
 
 class proxyWorker{
 
-    constructor(){
-
+    constructor(NATS_URL){
+        this.NATS_URL = NATS_URL;
     }
 
     async conectar(){
-        this.conexionWorker = await new ColaDeTrabajos(NATS_URL,
+        this.conexionWorker = await new ColaDeTrabajos(this.NATS_URL,
             {
                 worker: false,
                 nombreCliente: "clienteRandom"
