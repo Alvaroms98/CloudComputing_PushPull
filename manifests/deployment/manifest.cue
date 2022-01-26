@@ -2,13 +2,13 @@ package push_pull_deployment
 
 import (
   k "kumori.systems/kumori/kmv"
-  s "kumori.systems/pushpull/service:pushpull_service"
+  s "kumori.systems/examples/pushpull/service:pushpull_service"
 )
 
 #Manifest: k.#DeploymentManifest & {
 
   ref: {
-    domain: "kumori.systems.pushpull"
+    domain: "kumori.systems.examples"
     name: "pushpull_cfg"
     version: [0,0,1]
   }

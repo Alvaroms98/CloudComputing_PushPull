@@ -2,16 +2,16 @@ package pushpull_service
 
 import (
   k "kumori.systems/kumori/kmv"
-  f "kumori.systems/pushpull/components/frontend"
-  w "kumori.systems/pushpull/components/worker"
-  c "kumori.systems/pushpull/components/cola"
-  db "kumori.systems/pushpull/components/database"
+  f "kumori.systems/examples/pushpull/components/frontend"
+  w "kumori.systems/examples/pushpull/components/worker"
+  c "kumori.systems/examples/pushpull/components/cola"
+  db "kumori.systems/examples/pushpull/components/database"
 )
 
 #Manifest: k.#ServiceManifest & {
 
   ref: {
-    domain: "kumori.systems.pushpull"
+    domain: "kumori.systems.examples"
     name: "pushpull_service"
     version: [0,0,1]
   }

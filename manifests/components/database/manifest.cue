@@ -8,7 +8,7 @@ import (
 #Manifest : k.#ComponentManifest & {
 
   ref: {
-    domain: "kumori.systems.pushpull"
+    domain: "kumori.systems.examples"
     name: "database"
     version: [0,0,1]
   }

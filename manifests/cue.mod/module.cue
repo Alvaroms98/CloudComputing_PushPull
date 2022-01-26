@@ -4,7 +4,7 @@
 // - Manifest definition of the Kumori Service Application "calculator"
 // - Manifest definition to deploy the Kumori Service Application "calculator"
 //module: "kumori.systems/examples/calculator"
-module: "kumori.systems/pushpull/"
+module: "kumori.systems/examples/pushpull"
 
 // TODO: kumori service model should be opensource, whith no credentials
 creds = {

@@ -5,6 +5,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+#Kumori
+.kumori
+manifests/cue.mod/pkg
+
 # Runtime data
 pids
 *.pid
