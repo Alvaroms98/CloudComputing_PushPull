@@ -1,4 +1,4 @@
-package frontend
+package cola
 
 import (
   k "kumori.systems/kumori/kmv"
@@ -9,7 +9,7 @@ import (
 
   ref: {
     domain: "kumori.systems.pushpull"
-    name: "frontend"
+    name: "cola"
     version: [0,0,1]
   }
 
@@ -17,12 +17,9 @@ import (
 
     srv: {
       server: {
-        restapi: { protocol: "http", port: 8080 }
+        natsserver: { protocol: "tcp", port: 4222 }
       }
-      client: {
-        natsclient: { protocol: "tcp" }
-        dbclient: { protocol: "tcp" }
-      }
+      client: {}
     }
 
     config: {
@@ -37,24 +34,20 @@ import (
 
     code: {
 
-      frontend: {
-        name: "frontend"
+      cola: {
+        name: "cola"
 
         image: {
           hub: {
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "alvaromoure1998/cc_push_pull:frontend"
+          tag: "alvaromoure1998/cc_push_pull:natssrv"
         }
 
         mapping: {
           // Variables de entorno
-          env: {
-            HTTP_REST_API_PORT: value: strconv.FormatUint(srv.server.restapi.port, 10)
-            WORKER_ENDPOINT: value: "0.natsclient"
-            DB_ENDPOINT: value: "tcp://0.dbclient"
-          }
+          env: {}
         }
       }
 
