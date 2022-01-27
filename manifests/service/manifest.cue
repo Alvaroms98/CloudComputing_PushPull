@@ -6,6 +6,7 @@ import (
   w "kumori.systems/examples/pushpull/components/worker"
   c "kumori.systems/examples/pushpull/components/cola"
   db "kumori.systems/examples/pushpull/components/database"
+  m "kumori.systems/examples/pushpull/components/mariadb"
 )
 
 #Manifest: k.#ServiceManifest & {
@@ -42,6 +43,9 @@ import (
 
       database: k.#Role
       database: artifact: db.#Manifest
+
+      mariadb: k.#Role
+      mariadb: artifact: m.#Manifest
     }
 
     // Configuration spread:
@@ -81,6 +85,15 @@ import (
           resource: {}
         }
       }
+
+      mariadb: {
+        cfg: {
+          parameter: {
+            appconfig: {}
+          }
+          resource: {}
+        }
+      }
     }
 
     //
@@ -99,6 +112,7 @@ import (
       serviceconnector: { kind: "lb" }
       natsconnector: { kind: "full" }
       dbconnector: { kind: "full" }
+      mariaconnector: { kind: "full" }
     }
 
     // Links specify the topology graph.
@@ -111,10 +125,10 @@ import (
 
       // ******** Clientes de la cola ************
 
-      // FrontEnd -> Cola (FULL connector)
+      // FrontEnd -> Cola (LB connector)
       frontend: natsclient: to: "natsconnector"
 
-      // Worker -> Cola (Full connector)
+      // Worker -> Cola (LB connector)
       worker: natsclient: to: "natsconnector"
 
       // proxy inverso de nats
@@ -126,16 +140,25 @@ import (
 
       // ******** Clientes de la base de datos ************
 
-      // FrontEnd -> Database (FULL connector)
+      // FrontEnd -> Database (LB connector)
       frontend: dbclient: to: "dbconnector"
 
-      // Worker -> Database (Full connector)
+      // Worker -> Database (LB connector)
       worker: dbclient: to: "dbconnector"
 
       // proxy inverso de database
       dbconnector: to: database: "dbsrv"
 
       // ********************************************
+
+
+
+      // ********** Endpointdb to mariadb ******************
+
+      database: mariadbclient: to: "mariaconnector"
+      mariaconnector: to: mariadb: "mariasrv"
+
+      // *************************************************
 
     }
   }

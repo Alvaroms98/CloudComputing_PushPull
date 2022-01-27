@@ -1,4 +1,4 @@
-package database
+package mariadb
 
 import (
   k "kumori.systems/kumori/kmv"
@@ -9,7 +9,7 @@ import (
 
   ref: {
     domain: "kumori.systems.examples"
-    name: "database"
+    name: "mariadb"
     version: [0,0,1]
   }
 
@@ -17,11 +17,9 @@ import (
 
     srv: {
       server: {
-        dbsrv: { protocol: "tcp", port: 3001 }
+        mariasrv: { protocol: "tcp", port: 3306 }
       }
-      client: {
-        mariadbclient: { protocol: "tcp" }
-      }
+      client: {}
     }
 
     // config: {
@@ -36,23 +34,19 @@ import (
 
     // POD con dos contenedores, uno para mariadb y otro para la lógica-endpoint
     code: {
-
-      endpointdb: {
-        name: "endpointdb"
+      mariadb: {
+        name: "mariadb"
 
         image: {
           hub: {
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "alvaromoure1998/cc_push_pull:logicadb"
+          tag: "alvaromoure1998/cc_push_pull:mariadb"
         }
-
         mapping: {
-          // Variables de entorno
           env: {
-            DB_PASSWORD: value: "cc-pushpull"
-            DB_HOST: value: "0.mariadbclient"
+            MYSQL_ROOT_PASSWORD: value: "cc-pushpull"
           }
         }
       }
