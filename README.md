@@ -1,94 +1,167 @@
-# Cloud_Computing_PushPull
+# Proyecto de laboratorio: Push-Pull
 
-Polytechnic University of Valencia - Cloud Computing final project
+<!-- Resumen -->
 
-Deployment of services using Kumori Systems
+Este proyecto consiste en el desarrollo y despliegue de un servicio de filtrado de mensajes persistentes. El servicio alberga una arquitectura basada en microservicios, con la finalidad de que el producto final sea altamente escalable y disponible para el despliegue en infraestructuras *Cloud*. Para corroborar esta última característica, se incluyen los manifiestos necesarios para desplegar el servicio en la plataforma [Kumori Paas](https://kumori.systems/).
+
+<!-- Indice -->
+## Tabla de contenidos
+
+1. [Descripción](#desc)
+2. [Funcionamiento](#func)  
+    2.1. [Inserción de objetos JSON - PUSH](#func/uno)  
+    2.2. [Querys - PULL](#func/dos)   
+    2.3. [Eliminación de objetos - DELETE](#func/tres)   
+    2.4. [Instalación y despliegue local](#func/cuatro) 
+3. [Microservicios](#micro)  
+    3.1. [Frontend](#micro/uno)  
+    3.2. [Worker](#micro/dos)  
+    3.3. Cola  
+    3.4. Base de datos
+4. Representación del modelo en Kumori Paas
 
 
-## Getting started
+<!-- Descripción -->
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 1. Descripción <a name="desc"></a>
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Esta aplicación es un caso práctico y sencillo de la arquitectura básica que ha de estar presente en cualquier aplicación que se quiera llevar a producción en infraestructuras *Cloud*. A su vez, esta arquitectura basada en microservicios permite desarrollar de manera desacoplada los distintos componentes del producto final, ganando así, en independencia, escalabilidad y tolerancia a fallos.
 
-## Add your files
+El servicio **Push-Pull** responde a la integración de 4 componentes:
 
-- [ ] [Create](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- **FRONTEND**
+- **WORKER**
+- **COLA**
+- **BBDD** (Base de datos)
+
+cuyas funcionalidades son las siguientes:
+
+El microservicio **FRONTEND** expone un servidor API REST desde el cual los clientes serán capaces de:  
+
+1. Insertar objetos JSON (Push).
+2. Realizar un límitado número de *querys*, en busca de los objetos previamente insertados en el servicio (Pull).
+3. Eliminar objetos del servicio utilizando la misma semántica que las *querys* permiten.
+
+Las peticiones de inserción y eliminación de objetos que reciba el **FRONTEND** se almacenan en una **COLA** persistente de mensajes, desde la cual, el microservicio **WORKER**, cuando esté ocioso, rescatará para llevar a cabo las operaciones oportunas en la **BBDD**. Por otro lado, las peticiones *Pull*, o *querys*, que reciba el **FRONTEND** las resolverá directamente contactando con la **BBDD**.
+
+
+<!-- Funcionamiento -->
+
+## 2. Funcionamiento <a name="func"></a>
+
+El cliente puede interactuar con el servicio a través del API REST que expone el **FROTEND**. Los métodos y las rutas para poder interactuar con la interfaz son las siguientes:
+
+### 2.1. Inserción de objetos JSON - PUSH <a name="func/uno"></a>
+
+- POST ⮕ "URL/api/propietario/&lt;nombre propietaro&gt;"
+
+### 2.2. Querys - PULL <a name="func/dos"></a>
+
+Extraer todos los objetos almacenados en la base de datos:
+- GET ⮕ "URL/api/"
+
+Buscar todos los objetos que posee un propietario en concreto:
+- GET ⮕ "URL/api/propietario/&lt;nombre propietaro&gt;"
+
+Buscar todos los objetos que pertenezcan a un propietario y contenga la clave especificada:
+- GET ⮕ "URL/api/propietario/&lt;nombre propietaro&gt;/campo/&lt;clave&gt;"
+
+Buscar un objeto por su identificador único (otorgado por la base de datos):
+- GET ⮕ "URL/api/&lt;ID&gt;
+
+### 2.3. Eliminación de objetos - DELETE <a name="func/tres"></a>
+
+Borrar todos los objetos insertados en la base de datos:
+- DELETE ⮕ "URL/api/"
+
+Borrar todos los objetos que pertenencen a un propietario específico:
+- DELETE ⮕ "URL/api/propietario&lt;nombre propietaro&gt;"
+
+Borrar todos los objetos que pertenezcan a un propietario y contenga la clave especificada:
+- DELETE ⮕ "URL/api/propietario/&lt;nombre propietaro&gt;/campo/&lt;clave&gt;"
+
+Borrar un objeto por su identificador único (otorgado por la base de datos):
+- DELETE ⮕ "URL/api/&lt;ID&gt;
+
+Adicionalmente, la ruta *root* de la URL se ha condicionado para responder con un mensaje predeterminado, de modo que sirve para averiguar el estado del servicio:
+
+```js
+router.get('/', (req, res) => {
+    const bienvenida = {
+        mensaje: 'Bienvenido/a a la API REST de PUSH-PULL. Para empezar a usarla: URL/api/', 
+    };
+    res.json(bienvenida);
+});  
+```
+
+Cabe resaltar que esta API REST responde todas las peticiones en formato JSON.
+
+### 2.4. Instalación y despliegue local <a name="func/cuatro"></a>
+
+Si se quisiera instalar y desplegar el servicio en la máquina local, se han de seguir los siguientes pasos:
+
+**Instalación**  
+Se ha de disponer de la versión 16 o superior de [Node.js](https://nodejs.org/es/), así como del manejador de paquetes [npm](https://www.npmjs.com/). Después de clonar el repositorio, acceder a la carpeta `code` y ejecutar el siguiente *script* en la terminal:
+
+```bash
+for i in frontend worker database
+do
+    cd ${i}
+    npm install
+    cd ..
+done
+```
+
+Este pequeño *script* instalará todas las dependencias de npm, necesarias para ejecutar los microservicios. 
+
+**Despligue**
+
+El repositorio dispone del fichero `docker-compose.yml` con la configuración necesaria como para poder ejecutarlo con la siguiente instrucción:
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/sanreinoso/cloud_computing_pushpull.git
-git branch -M main
-git push -uf origin main
+docker-compose up
+```
+Al ejecutar este comando, asegurarse de que se está en la carpeta donde se encuentra dicho archivo.
+
+```yml
+frontend:
+    build: code/frontend/.
+    environment:
+        WORKER_ENDPOINT: natssrv:4222
+        DB_ENDPOINT: tcp://database:3001
+        HTTP_REST_API_PORT: 3000
+    depends_on:
+        - natssrv
+        - worker
+        - database
+    ports:
+        - "3000:3000"
 ```
 
-## Integrate with your tools
+Como se puede observar, por cada uno de los componentes, se contruye la imagen a partir de su [Dockerfile](https://docs.docker.com/engine/reference/builder/), se configura con variables de entorno, se exponen los puertos de servicio, y se establecen las dependencias respecto a otros microservicios.
 
-- [ ] [Set up project integrations](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/project/integrations/)
 
-## Collaborate with your team
 
-- [ ] [Invite team members and collaborators](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Automatically merge when pipeline succeeds](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+<!-- Microservicios -->
 
-## Test and Deploy
+## 3. Microservicios <a name="micro"></a>
 
-Use the built-in continuous integration in GitLab.
+Esta sección pretende describir en profundidad cada uno de los microservicios que componen la apliciación.
 
-- [ ] [Get started with GitLab CI/CD](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://docs.gitlab.com/ee/user/clusters/agent/)
+### 3.1. Frontend <a name="micro/uno"></a>
 
-***
+Como se ha explicado anteriormente, el **FRONTEND** expone un API REST para que el cliente pueda hacer uso de las opciones que brinda el servicio. Este API está desarrollado haciendo uso de [Express](https://expressjs.com/), que es el framework web más popular de Nodejs.
 
-# Editing this README
+![Componente frontend](imagenes/frontend_comp.png)
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://gitlab.com/-/experiment/new_project_readme_content:7a41892e4d7435aba63c6e3fb9917c4c?https://www.makeareadme.com/) for this template.
+Como se puede ver en la imagen, el **FRONTEND** consta de tres interfaces distintas:
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+1. API REST es la interfaz de servicio mediante la cual los clientes de internet realizan las peticiones al servicio.
+2. Proxy BBDD es el canal por el que establece comunicación con la base de datos, es decir, una dependencia.
+3. Proxy WORKER es el otro canal cliente que necesita el **FRONTEND** para ejercer su funcionalidad.
 
-## Name
-Choose a self-explaining name for your project.
+Ambos proxys enmascaran las comunicaciones con el resto de microservicios de los que depende, de modo que, dentro del código, proxy BBDD representa las funcionalidades de la **BBDD** en el **FRONTEND**, y, proxy WORKER representa las funcionalidades del **WORKER**, enmascarando la comunicación real con la **COLA**.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
-
+### 3.2. Worker <a name="micro/dos"></a>

@@ -48,3 +48,6 @@ web_modules
 .vscode-test
 .vs
 
+# readme por defecto de gitlab
+README_default.md
+
