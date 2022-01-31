@@ -18,8 +18,8 @@ import (
     srv: {
       server: {}
       client: {
-        dbclient: { protocol: "tcp" }
         natsclient: { protocol: "tcp" }
+        dbclient: { protocol: "tcp" }
       }
     }
 
@@ -43,14 +43,14 @@ import (
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "sanreinoso96/cc_push_pull:worker"
+          tag: "alvaromoure1998/cc_push_pull:worker"
         }
 
         mapping: {
           // Variables de entorno
           env: {
-            NATS_ENDPOINT: value: "0.natsclient:4222"
-            DB_ENDPOINT: value: "0.dbclient:3001"
+            NATS_ENDPOINT: value: "0.natsclient"
+            DB_ENDPOINT: value: "tcp://0.dbclient"
           }
         }
       }
