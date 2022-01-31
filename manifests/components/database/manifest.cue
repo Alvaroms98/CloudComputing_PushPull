@@ -45,7 +45,7 @@ import (
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "sanreinoso96/cc_push_pull:database"
+          tag: "alvaromoure1998/cc_push_pull:logicadb"
         }
 
         mapping: {

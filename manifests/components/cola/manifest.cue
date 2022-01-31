@@ -42,7 +42,7 @@ import (
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "sanreinoso96/cc_push_pull:nats"
+          tag: "alvaromoure1998/cc_push_pull:natssrv"
         }
 
         mapping: {
