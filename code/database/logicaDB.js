@@ -1,18 +1,26 @@
 const mariadb = require('mariadb');
-const password = process.env.DB_PASSWORD || 'admin1234';
-const host = process.env.DB_HOST || '127.0.0.1';
+// const password = process.env.DB_PASSWORD || 'admin1234';
+// const host = process.env.DB_HOST || '127.0.0.1';
 
-const pool = mariadb.createPool({
-  host: host,
-  user: 'root',
-  password: password,
-  database: 'pushpull',
-  connectionLimit: 5
-});
+// const pool = mariadb.createPool({
+//   host: host,
+//   user: 'root',
+//   password: password,
+//   database: 'pushpull',
+//   connectionLimit: 5
+// });
 
 class Database {
-  constructor() {
+  constructor(password, host) {
+    console.log("**** Creando Pool ****");
 
+    this.pool = mariadb.createPool({
+      host: host,
+      user: 'root',
+      password: password,
+      database: 'pushpull',
+      connectionLimit: 5
+    });
   }
 
   /**
@@ -25,7 +33,7 @@ class Database {
     let conn;
 
     try {
-      conn = await pool.getConnection();
+      conn = await this.pool.getConnection();
       const rows = await conn.query("SELECT * FROM JSON_OBJECT");
       console.log("Devuelvo base de datos completa --- sacarTodo()");
       return rows;
@@ -55,7 +63,7 @@ class Database {
       //Convierto string a JSON y extraigo el propietario
       var propietario = JSON.parse(args);
 
-      conn = await pool.getConnection();
+      conn = await this.pool.getConnection();
       let myQuery = `SELECT * FROM JSON_OBJECT WHERE Propietario ='${propietario.propietario}'`;
       const rows = await conn.query(myQuery);
       console.log("Devuelvo datos de Propietario: --- ", propietario);
@@ -88,7 +96,7 @@ class Database {
       var propietario = body.propietario;
       var objeto = body.objeto;
 
-      conn = await pool.getConnection();
+      conn = await this.pool.getConnection();
       let myQuery = `INSERT INTO JSON_OBJECT VALUES (NULL, '${propietario}', '${JSON.stringify(objeto)}')`;
       const rta = await conn.query(myQuery);
       console.log("Insertando datos en la DB. Propietario: --- ", propietario);
@@ -116,7 +124,7 @@ class Database {
     try {
       //Convierto string a JSON, extraigo id
       var id = JSON.parse(args);
-      conn = await pool.getConnection();
+      conn = await this.pool.getConnection();
       let myQuery = `SELECT * FROM JSON_OBJECT WHERE Id =${id.id}`;
       const rows = await conn.query(myQuery);
       console.log("Devuelvo datos objeto con ID --- ", id);
@@ -136,7 +144,7 @@ class Database {
     let conn;
     
     try {
-      conn = await pool.getConnection();
+      conn = await this.pool.getConnection();
       const rows = await conn.query('DELETE FROM JSON_OBJECT');
       console.log("Borrando toda la data de JSON_Object");
       return rows;
@@ -158,7 +166,7 @@ class Database {
       //Convierto string a JSON y extraigo el propietario
       var propietario = JSON.parse(args);
 
-      conn = await pool.getConnection();
+      conn = await this.pool.getConnection();
       let myQuery = `DELETE FROM JSON_OBJECT WHERE Propietario ='${propietario.propietario}'`;
       const rows = await conn.query(myQuery);
       console.log("Eliminando datos del propietario: --- ", propietario);
@@ -181,7 +189,7 @@ class Database {
     try {
       //Convierto string a JSON, extraigo id
       var id = JSON.parse(args);
-      conn = await pool.getConnection();
+      conn = await this.pool.getConnection();
       let myQuery = `DELETE FROM JSON_OBJECT WHERE Id =${id.id}`;
       const rows = await conn.query(myQuery);
       console.log("Eliminando objeto con ID --- ", id);

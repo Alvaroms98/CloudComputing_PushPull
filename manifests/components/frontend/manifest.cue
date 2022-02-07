@@ -45,15 +45,15 @@ import (
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "alvaromoure1998/cc_push_pull:frontend"
+          tag: "alvaromoure1998/push_pull2:frontend"
         }
 
         mapping: {
           // Variables de entorno
           env: {
             HTTP_REST_API_PORT: value: strconv.FormatUint(srv.server.restapi.port, 10)
-            WORKER_ENDPOINT: value: "0.natsclient"
-            DB_ENDPOINT: value: "tcp://0.dbclient"
+            WORKER_ENDPOINT: value: "0.natsclient:80"
+            DB_ENDPOINT: value: "tcp://0.dbclient:80"
           }
         }
       }

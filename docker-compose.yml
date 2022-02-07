@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mariadb:
     build: code/database/mariaDB/.
-    image: mariadb:push-pull
+    image: alvaromoure1998/push_pull2:mariadb
     environment:
       MYSQL_ROOT_PASSWORD: cc-pushpull
     ports:
@@ -11,7 +11,7 @@ services:
   
   database:
     build: code/database/.
-    image: logicadb:1.0.0
+    image: alvaromoure1998/push_pull2:database
     environment:
       DB_PASSWORD: 'cc-pushpull'
       DB_HOST: mariadb
@@ -22,12 +22,14 @@ services:
   
   natssrv:
     build: code/cola/.
+    image: alvaromoure1998/push_pull2:cola
     ports:
       - "4222"
     command: -js
   
   worker:
     build: code/worker/.
+    image: alvaromoure1998/push_pull2:worker
     environment:
         NATS_ENDPOINT: natssrv:4222
         DB_ENDPOINT: tcp://database:3001
@@ -37,6 +39,7 @@ services:
   
   frontend:
     build: code/frontend/.
+    image: alvaromoure1998/push_pull2:frontend
     environment:
         WORKER_ENDPOINT: natssrv:4222
         DB_ENDPOINT: tcp://database:3001

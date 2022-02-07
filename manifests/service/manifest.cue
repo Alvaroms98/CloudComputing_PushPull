@@ -6,7 +6,6 @@ import (
   w "kumori.systems/examples/pushpull/components/worker"
   c "kumori.systems/examples/pushpull/components/cola"
   db "kumori.systems/examples/pushpull/components/database"
-  m "kumori.systems/examples/pushpull/components/mariadb"
 )
 
 #Manifest: k.#ServiceManifest & {
@@ -43,9 +42,6 @@ import (
 
       database: k.#Role
       database: artifact: db.#Manifest
-
-      mariadb: k.#Role
-      mariadb: artifact: m.#Manifest
     }
 
     // Configuration spread:
@@ -85,15 +81,6 @@ import (
           resource: {}
         }
       }
-
-      mariadb: {
-        cfg: {
-          parameter: {
-            appconfig: {}
-          }
-          resource: {}
-        }
-      }
     }
 
     //
@@ -111,8 +98,7 @@ import (
     connector: {
       serviceconnector: { kind: "lb" }
       natsconnector: { kind: "full" }
-      dbconnector: { kind: "full" }
-      mariaconnector: { kind: "full" }
+      dbconnector: { kind: "lb" }
     }
 
     // Links specify the topology graph.
@@ -125,10 +111,10 @@ import (
 
       // ******** Clientes de la cola ************
 
-      // FrontEnd -> Cola (LB connector)
+      // FrontEnd -> Cola (FULL connector)
       frontend: natsclient: to: "natsconnector"
 
-      // Worker -> Cola (LB connector)
+      // Worker -> Cola (Full connector)
       worker: natsclient: to: "natsconnector"
 
       // proxy inverso de nats
@@ -140,10 +126,10 @@ import (
 
       // ******** Clientes de la base de datos ************
 
-      // FrontEnd -> Database (LB connector)
+      // FrontEnd -> Database (FULL connector)
       frontend: dbclient: to: "dbconnector"
 
-      // Worker -> Database (LB connector)
+      // Worker -> Database (Full connector)
       worker: dbclient: to: "dbconnector"
 
       // proxy inverso de database
@@ -151,15 +137,7 @@ import (
 
       // ********************************************
 
-
-
-      // ********** Endpointdb to mariadb ******************
-
-      database: mariadbclient: to: "mariaconnector"
-      mariaconnector: to: mariadb: "mariasrv"
-
-      // *************************************************
-
     }
   }
 }
+

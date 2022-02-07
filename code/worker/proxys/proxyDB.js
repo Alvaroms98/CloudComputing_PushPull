@@ -4,7 +4,7 @@
 
 // Comunicación por zmq
 const zmq = require('zeromq');
-const URL = process.env.URL || 'localhost:3001';
+//const URL = process.env.URL || 'localhost:3001';
 
 
 // Como todo proxy esto no implementa ninguna lógica, solo comunicaciones

@@ -42,7 +42,7 @@ import (
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "alvaromoure1998/cc_push_pull:natssrv"
+          tag: "alvaromoure1998/push_pull2:cola"
         }
 
         mapping: {

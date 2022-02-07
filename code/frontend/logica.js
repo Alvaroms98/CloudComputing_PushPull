@@ -22,10 +22,12 @@ class Logica {
     // función asíncrona para que los proxys conecten con sus
     // respectivos endpoints
     async conectar() {
-
-
-        this.proxydb.conectar();
+        console.log("**** Conectando con NATS ****");
         await this.proxyworker.conectar();
+
+        console.log("**** Conectando con DB ****");
+        this.proxydb.conectar();
+        
 
         console.log("\n ************** Proxys Conectados! ******************");
     }

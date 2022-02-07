@@ -15,6 +15,9 @@ class Logica {
 
     constructor(DB_URL) {
         this.proxydb = new proxyDB(DB_URL);
+
+        console.log("**** Conectando con NATS ****");
+
         this.proxydb.conectar();
     }
 

@@ -47,6 +47,10 @@ const main = async () => {
     // Llamar a la lógica
     const logica = new Logica(DB_URL, WORKER_URL);
 
+    console.log("------------- ENV ------------");
+    console.log(`DB_URL: ${DB_URL}`);
+    console.log(`WORKER_URL: ${WORKER_URL}`);
+
     // conectar los proxys de la lógica a sus endpoints
     await logica.conectar();
 

@@ -43,14 +43,14 @@ import (
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "alvaromoure1998/cc_push_pull:worker"
+          tag: "alvaromoure1998/push_pull2:worker"
         }
 
         mapping: {
           // Variables de entorno
           env: {
-            NATS_ENDPOINT: value: "0.natsclient"
-            DB_ENDPOINT: value: "tcp://0.dbclient"
+            NATS_ENDPOINT: value: "0.natsclient:80"
+            DB_ENDPOINT: value: "tcp://0.dbclient:80"
           }
         }
       }

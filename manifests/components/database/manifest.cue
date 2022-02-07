@@ -19,17 +19,11 @@ import (
       server: {
         dbsrv: { protocol: "tcp", port: 3001 }
       }
-      client: {
-        mariadbclient: { protocol: "tcp" }
-      }
+      client: {}
     }
 
-    // config: {
-    //   }
-    // }
-
     size: {
-      $_memory: "300Mi"
+      $_memory: "100Mi"
       $_cpu: "100m"
       $_bandwidth: "10M"
     }
@@ -45,14 +39,31 @@ import (
             name: "registry.hub.docker.com"
             secret: ""
           }
-          tag: "alvaromoure1998/cc_push_pull:logicadb"
+          tag: "alvaromoure1998/push_pull2:database"
         }
 
         mapping: {
           // Variables de entorno
           env: {
             DB_PASSWORD: value: "cc-pushpull"
-            DB_HOST: value: "0.mariadbclient"
+            DB_HOST: value: "localhost"
+          }
+        }
+      }
+
+      mariadb: {
+        name: "mariadb"
+
+        image: {
+          hub: {
+            name: "registry.hub.docker.com"
+            secret: ""
+          }
+          tag: "alvaromoure1998/push_pull2:mariadb"
+        }
+        mapping: {
+          env: {
+            MYSQL_ROOT_PASSWORD: value: "cc-pushpull"
           }
         }
       }
@@ -60,3 +71,4 @@ import (
     }
   }
 }
+

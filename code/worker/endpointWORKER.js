@@ -73,7 +73,9 @@ const main = async () => {
             worker: true
         }
     );
-
+    console.log("----------- ENV -----------");
+    console.log(`DB_URL: ${DB_URL}`);
+    
     // llamar a la lógica del worker
     const logica = new Logica(DB_URL);
 

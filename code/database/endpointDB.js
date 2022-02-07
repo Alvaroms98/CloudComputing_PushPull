@@ -3,7 +3,7 @@ const zmq = require("zeromq");
 
 
 function main() {
-    const logicaDB = new database.Database();
+    const logicaDB = new database.Database(process.env.DB_PASSWORD,process.env.DB_HOST);
     const conexionResp = zmq.socket("rep");
 
     process.on('SIGINT', () => {
