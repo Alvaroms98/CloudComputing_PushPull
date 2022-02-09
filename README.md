@@ -18,7 +18,7 @@ Este proyecto consiste en el desarrollo y despliegue de un servicio de filtrado 
     3.2. [Worker](#micro/dos)  
     3.3. [Cola](#micro/tres)  
     3.4. [Base de datos](#micro/cuatro)
-4. Representación del modelo en Kumori Paas
+4. [Representación del modelo en Kumori Paas](#kumori)
 
 
 <!-- Descripción -->
@@ -49,7 +49,7 @@ Las peticiones de inserción y eliminación de objetos que reciba el **FRONTEND*
 
 ## 2. Funcionamiento <a name="func"></a>
 
-El cliente puede interactuar con el servicio a través del API REST que expone el **FROTEND**. Los métodos y las rutas para poder interactuar con la interfaz son las siguientes:
+El cliente puede interactuar con el servicio a través un API REST que expone el **FROTEND**. Los métodos y las rutas para poder interactuar con la interfaz son las siguientes:
 
 ### 2.1. Inserción de objetos JSON - PUSH <a name="func/uno"></a>
 
@@ -83,7 +83,7 @@ Borrar todos los objetos que pertenezcan a un propietario y contenga la clave es
 Borrar un objeto por su identificador único (otorgado por la base de datos):
 - DELETE ⮕ "URL/api/&lt;ID&gt;
 
-Adicionalmente, la ruta *root* de la URL se ha condicionado para responder con un mensaje predeterminado, de modo que sirve para averiguar el estado del servicio:
+Adicionalmente, la ruta *root* de la URL se ha condicionado para responder con un mensaje predeterminado, de modo que sirve para conocer el estado del servicio:
 
 ```js
 router.get('/', (req, res) => {
@@ -138,7 +138,7 @@ frontend:
         - "3000:3000"
 ```
 
-Como se puede observar, por cada uno de los componentes, se contruye la imagen a partir de su [Dockerfile](https://docs.docker.com/engine/reference/builder/), se configura con variables de entorno, se exponen los puertos de servicio, y se establecen las dependencias respecto a otros microservicios.
+Cada uno de los componentes del servicio se contruye a partir de su imagen [Dockerfile](https://docs.docker.com/engine/reference/builder/), se configuran con variables de entorno que exponen los puertos de servicio, y se establecen las dependencias respecto a otros microservicios.
 
 
 
@@ -218,3 +218,8 @@ CREATE TABLE JSON_OBJECT(
 1. "**Id**" es un identificador único autoincremental gestionado automáticamente por la base de datos, que proporciona una forma de acceso única y directa al objeto deseado.
 2. "**Propietario**" almacena el nombre del dueño del objeto almacenado.
 3. "**MyData**" es el objeto JSON almacenado en la acción "Push".
+
+## 4. Representación del modelo en Kumori Paas <a name="kumori"></a>
+![Topologia Kumori Paas](imagenes/push-pull.png)
+
+La topologia utilizada para el despliegue en Kumori utiliza canales cliente, canales servidor, conectores *full*, conectores *lb* y un Http-Inbound que es configurado con un dominio que recibira las peticiones HTTP enviadas al servicio.
