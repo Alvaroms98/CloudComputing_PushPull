@@ -220,6 +220,30 @@ CREATE TABLE JSON_OBJECT(
 3. "**MyData**" es el objeto JSON almacenado en la acción "Push".
 
 ## 4. Representación del modelo en Kumori Paas <a name="kumori"></a>
+
 ![Topologia Kumori Paas](imagenes/push-pull.png)
 
-La topologia utilizada para el despliegue en Kumori utiliza canales cliente, canales servidor, conectores *full*, conectores *lb* y un Http-Inbound que es configurado con un dominio que recibira las peticiones HTTP enviadas al servicio.
+La topologia utilizada para el despliegue en Kumori utiliza canales cliente, canales servidor, conectores *full*, conectores *lb* y un *http-inbound* que es configurado con un dominio que recibe las peticiones HTTP enviadas al servicio.
+
+**Canales cliente**
+
+* WORKER:natsclient
+* WORKER:dbclient 
+* FRONTEND:natsclient
+* FRONTEND:natsclient
+
+**Canales servidor**
+* DATABASE:dbsrv
+* COLA:natsserver
+* FRONTEND:restapi
+
+**Conectores full**
+* natsconnectorfront
+* natsconnectorworker
+
+**Conectores lb**
+* serviceconnector
+* dbconnector
+
+**HTTP-Inbound**
+* https://cloud1.vera.kumori.cloud
