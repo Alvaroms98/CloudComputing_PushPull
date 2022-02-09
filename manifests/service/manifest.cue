@@ -97,7 +97,8 @@ import (
     // Connectors, providing specific patterns of communication among channels.
     connector: {
       serviceconnector: { kind: "lb" }
-      natsconnector: { kind: "full" }
+      natsconnectorfront: { kind: "full" }
+      natsconnectorworker: { kind: "full" }
       dbconnector: { kind: "lb" }
     }
 
@@ -112,13 +113,14 @@ import (
       // ******** Clientes de la cola ************
 
       // FrontEnd -> Cola (FULL connector)
-      frontend: natsclient: to: "natsconnector"
+      frontend: natsclient: to: "natsconnectorfront"
 
       // Worker -> Cola (Full connector)
-      worker: natsclient: to: "natsconnector"
+      worker: natsclient: to: "natsconnectorworker"
 
       // proxy inverso de nats
-      natsconnector: to: cola: "natsserver"
+      natsconnectorfront: to: cola: "natsserver"
+      natsconnectorworker: to: cola: "natsserver"
 
       // ********************************************
 

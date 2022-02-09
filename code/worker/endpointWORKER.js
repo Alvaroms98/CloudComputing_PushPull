@@ -63,18 +63,37 @@ const entroATrabajar = async (worker, logica) => {
     }
 }
 
+const conectarNATS = async () => {
+    return new Promise((resolve,reject) => {
+        var worker;
+        try {
+            worker = new ColaDeTrabajos(NATS_URL, { worker: true });
+            setTimeout( () => {
+                console.log(`Se ha esperado 2 secs para resolver la conexión con NATS`);
+            }, 2000);
+            resolve(worker);
+        } catch(e){
+            reject(e);
+        }
+    });
+}
+
 
 
 const main = async () => {
-    // Establecer conexion con la cola
-    const worker = await new ColaDeTrabajos(
-        NATS_URL,
-        {
-            worker: true
-        }
-    );
     console.log("----------- ENV -----------");
     console.log(`DB_URL: ${DB_URL}`);
+    console.log(`NATS_URL: ${NATS_URL}`);
+    // Establecer conexion con la cola
+    const worker = await conectarNATS();
+
+    // const worker = new ColaDeTrabajos(
+    //     NATS_URL,
+    //     {
+    //         worker: true
+    //     }
+    // );
+    
     
     // llamar a la lógica del worker
     const logica = new Logica(DB_URL);

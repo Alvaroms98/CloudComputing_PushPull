@@ -23,7 +23,7 @@ import (
     }
 
     size: {
-      $_memory: "100Mi"
+      $_memory: "500Mi"
       $_cpu: "100m"
       $_bandwidth: "10M"
     }

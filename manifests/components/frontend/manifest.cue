@@ -52,7 +52,7 @@ import (
           // Variables de entorno
           env: {
             HTTP_REST_API_PORT: value: strconv.FormatUint(srv.server.restapi.port, 10)
-            WORKER_ENDPOINT: value: "0.natsclient:80"
+            WORKER_ENDPOINT: value: "0.natsclient:4222"
             DB_ENDPOINT: value: "tcp://0.dbclient:80"
           }
         }
