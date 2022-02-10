@@ -1,9 +1,14 @@
 const database = require("./logicaDB");
 const zmq = require("zeromq");
 
+// --------------- CONFIGURACIONES PARA DESPLIEGUE ---------- //
+const PASSWORD = process.env.DB_PASSWORD || 'admin1234';
+const DB_HOST = process.env.DB_HOST || 'localhost';
+
+
 
 function main() {
-    const logicaDB = new database.Database(process.env.DB_PASSWORD,process.env.DB_HOST);
+    const logicaDB = new database.Database(PASSWORD, DB_HOST);
     const conexionResp = zmq.socket("rep");
 
     process.on('SIGINT', () => {

@@ -10,8 +10,8 @@ const { ColaDeTrabajos, esperar } = require('./proxys/ColaDeTrabajos');
 const { Logica } = require('./logica');
 
 // --------------- CONFIGURACIONES PARA DESPLIEGUE ---------- //
-const NATS_URL = process.env.NATS_ENDPOINT;
-const DB_URL = process.env.DB_ENDPOINT;
+const NATS_URL = process.env.NATS_ENDPOINT || 'localhost:4222';
+const DB_URL = process.env.DB_ENDPOINT || 'tcp://localhost:3001';
 // --------------------------------------------------------- //
 
 // Para salir del bucle infinito cuando se quiera matar el proceso

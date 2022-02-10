@@ -11,11 +11,11 @@ const { Logica } = require('./logica');
 
 // --------------- CONFIGURACIONES PARA DESPLIEGUE ---------- //
 // Puerto de escucha
-const REST_PORT = process.env.HTTP_REST_API_PORT;
+const REST_PORT = process.env.HTTP_REST_API_PORT || '3000';
 
 // Conexiones
-const WORKER_URL = process.env.WORKER_ENDPOINT; //"172.17.0.1:4222";
-const DB_URL = process.env.DB_ENDPOINT; //"tcp://172.17.0.1:3001";
+const WORKER_URL = process.env.WORKER_ENDPOINT || 'localhost:4222'; //"172.17.0.1:4222";
+const DB_URL = process.env.DB_ENDPOINT || 'tcp://localhost:3001'; //"tcp://172.17.0.1:3001";
 
 // --------------------------------------------------------- //
 

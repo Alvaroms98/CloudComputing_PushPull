@@ -19,6 +19,7 @@ Este proyecto consiste en el desarrollo y despliegue de un servicio de filtrado 
     3.3. [Cola](#micro/tres)  
     3.4. [Base de datos](#micro/cuatro)
 4. [Representación del modelo en Kumori Paas](#kumori)
+5. [Test bash script](#bash)
 
 
 <!-- Descripción -->
@@ -247,3 +248,10 @@ La topologia utilizada para el despliegue en Kumori utiliza canales cliente, can
 
 **HTTP-Inbound**
 * https://cloud1.vera.kumori.cloud
+
+
+## 5. Test bash script <a name="bash"></a>
+Para probar las operaciones descritas anteriormente puedes ejecutar el script proporcionado llamado **test.sh**
+```shell
+./test.sh <domain-name>.vera.kumori.cloud
+ ```
