@@ -19,7 +19,8 @@ Este proyecto consiste en el desarrollo y despliegue de un servicio de filtrado 
     3.3. [Cola](#micro/tres)  
     3.4. [Base de datos](#micro/cuatro)
 4. [Representación del modelo en Kumori Paas](#kumori)
-5. [Test bash script](#bash)
+5. [Replicación de la base de datos](#replicacion)
+6. [Test bash script](#bash)
 
 
 <!-- Descripción -->
@@ -250,7 +251,19 @@ La topologia utilizada para el despliegue en Kumori utiliza canales cliente, can
 * https://cloud1.vera.kumori.cloud
 
 
-## 5. Test bash script <a name="bash"></a>
+## 5. Replicación de la base de datos <a name="replicacion"></a>
+
+El servidor gestor de bases de datos de MariaDB, utilizando la imagen docker de [Bitnami](https://hub.docker.com/r/bitnami/mariadb), presenta opciones de replicación "maestro-esclavo". Donde las instancias "esclavas" reproducen asíncronamente las modificaciones a las que se somete la instancia maestra. Incluir esta opción en la infraestructura de la aplicación no solventa el problema de no disponer de tolerancia a fallos de la instancia maestra (pues si esta cae, las réplicas de lectura quedan huérfanas), pero sí es interesente para mejorar el rendimiento de la aplicación y descargar de tráfico de lectura a la instancia maestra. Es decir, se propone una infraestructura en la cual la instancia maestra únicamente es atacada por las instancias WORKER, ya que son los únicos que pueden modificar el contenido de la base de datos, y, por otro lado, que las instancias esclavas sean contactadas por las instancias FRONTEND para las operaciones de lectura (estando estas instancias esclavas precedidas por un balanceador de carga que distribuye la carga entre todas las instancias esclavas disponibles).
+
+La representación de esta infraestructura en el modelo Kumori PaaS es muy similar a la presentada en el punto anterior, pero con las modificaciones descritas en este punto:
+
+![Topologia Kumori Paas](imagenes/push-pull_replica.png)
+
+Sin embargo, esta infraestructura de alta disponibilidad de la base de datos solo ha sido posible ponerla en funcionamiento a nivel local. En la rama [mariadb_replication](https://gitlab.com/sanreinoso/cc_pushpull/-/tree/mariadb_replication) de este repositorio se encuentran todos los manifiestos necesarios (a criterio de los autores del proyecto) para desplegar esta infraestructura (se incluye la declaración de un volumen volátil para la instancia maestra).
+
+
+
+## 6. Test bash script <a name="bash"></a>
 Para probar las operaciones descritas anteriormente puedes ejecutar el script proporcionado llamado **test.sh**
 ```shell
 ./test.sh <domain-name>.vera.kumori.cloud
